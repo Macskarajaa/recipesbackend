@@ -1,0 +1,45 @@
+import express from "express"
+import cors from "cors"
+import dotenv from "dotenv"
+import cloudinary from "./cloudinaryConfig"
+
+dotenv.config()
+
+const app = express()
+app.use(cors())
+app.use(express.json({limit:"5mb"}))
+
+//feltöltés végpont:
+app.post('/api/uploadImage', async (req,resp)=>{
+    try {
+        const {image}= req.body
+        const uploadResponse = await cloudinary.uploader.upload(image,{folder:"recipes"})
+        resp.json({
+            serverMsg:"Image upoaded!",
+            url:uploadResponse.secure_url,
+            public_id:uploadResponse.public_id
+        })
+    } catch (error) {
+        console.log(error);
+        resp.status(500).json({serverMsg:"Upload failed"})
+        
+    }
+})
+
+//törlés végpont:
+app.post('/api/deleteImage',async (req,resp)=>{
+    
+    try {
+        const {public_id} = req.body
+        console.log(`publicId kliens oldalrol`,public_id);
+        const deleteResult = await cloudinary.uploader.destroy(public_id)
+        if(deleteResult.result="ok") resp.json({serverMsg:"a kép sikeresen törlődött"})
+        else resp.status(404).json({serverMsg:"Image not found or already deleted"})    
+    } catch (error) {
+         console.log(error);
+        resp.status(500).json({serverMsg:"Delete failed"})
+    }
+})
+
+const port = process.env.PORT || 5000
+app.listen(port, ()=>console.log(`server listening on port: ${port}`))
