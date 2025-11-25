@@ -1,7 +1,7 @@
 import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
-import cloudinary from "./cloudinaryConfig"
+import cloudinary from "./cloudinaryConfig.js"
 
 dotenv.config()
 
