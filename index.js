@@ -6,8 +6,8 @@ import cloudinary from "./cloudinaryConfig.js"
 dotenv.config()
 
 const app = express()
-app.use(cors())
-//app.use(cors({ origin:"https://recipesbackend-theta.vercel.app"}))
+//app.use(cors())
+app.use(cors({ origin:"https://recipesbackend-theta.vercel.app"}))
 
 app.use(express.json({limit:"5mb"}))
 
@@ -35,7 +35,7 @@ app.post('/api/deleteImage',async (req,resp)=>{
         const {public_id} = req.body
         console.log(`publicId kliens oldalrol`,public_id);
         const deleteResult = await cloudinary.uploader.destroy(public_id)
-        if(deleteResult.result="ok") resp.json({serverMsg:"a kép sikeresen törlődött"})
+        if(deleteResult.result==="ok") resp.json({serverMsg:"a kép sikeresen törlődött"})
         else resp.status(404).json({serverMsg:"Image not found or already deleted"})    
     } catch (error) {
          console.log(error);
